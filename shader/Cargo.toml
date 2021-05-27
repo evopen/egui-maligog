@@ -5,4 +5,10 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+crate-type = ["dylib"]
+
+
 [dependencies]
+spirv-std = "0.4.0-alpha.7"
+glam = { version = "0.15.2", default-features = false, features = ["libm", "spirv-std", "scalar-math"] }

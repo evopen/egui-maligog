@@ -5,6 +5,8 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
-spirv-std = "0.4.0-alpha.7"
-glam = { version = "0.15.2", default-features = false, features = ["libm", "spirv-std", "scalar-math"] }
+[build-dependencies.spirv-builder]
+git = "https://github.com/EmbarkStudios/rust-gpu"
+rev = "6019f391ec8d8caec3c7a16235322aca036e2d03"
+default-features = false
+features = ["use-installed-tools"]

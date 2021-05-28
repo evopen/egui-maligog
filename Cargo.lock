@@ -384,6 +384,7 @@ dependencies = [
  "gpu-allocator",
  "log",
  "num-traits",
+ "raw-window-handle",
  "strum",
  "strum_macros",
  "thread_local",

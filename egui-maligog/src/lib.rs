@@ -28,7 +28,7 @@ impl ScreenDescriptor {
     }
 }
 
-struct UiPass {
+pub struct UiPass {
     device: Device,
     graphics_pipeline: maligog::GraphicsPipeline,
     index_buffers: Vec<maligog::Buffer>,
@@ -46,7 +46,7 @@ struct UiPass {
 }
 
 impl UiPass {
-    pub fn new(device: maligog::Device) -> Self {
+    pub fn new(device: &maligog::Device) -> Self {
         let shader_module = device.create_shader_module(SHADER);
         let uniform_buffer = device.create_buffer(
             Some("uniform buffer"),
@@ -248,7 +248,7 @@ impl UiPass {
     pub fn execute(
         &mut self,
         recorder: &mut maligog::CommandRecorder,
-        color_attachment: maligog::Image,
+        color_attachment: &maligog::Image,
         paint_jobs: &[egui::paint::ClippedMesh],
         screen_descriptor: &ScreenDescriptor,
     ) {
@@ -336,11 +336,12 @@ impl UiPass {
 
     fn get_texture_descriptor_set(&self, texture_id: egui::TextureId) -> maligog::DescriptorSet {
         match texture_id {
-            egui::TextureId::Egui => self
-                .texture_descriptor_set
-                .as_ref()
-                .expect("egui texture was not set before the first draw")
-                .clone(),
+            egui::TextureId::Egui => {
+                self.texture_descriptor_set
+                    .as_ref()
+                    .expect("egui texture was not set before the first draw")
+                    .clone()
+            }
             egui::TextureId::User(id) => {
                 let id = id as usize;
                 assert!(id < self.user_textures.len());

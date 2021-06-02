@@ -3,6 +3,8 @@ use std::collections::BTreeMap;
 use std::iter::FromIterator;
 use std::time::Duration;
 
+use egui_maligog::ScreenDescriptor;
+use egui_maligog::UiPass;
 use maligog::vk;
 use maligog::BufferView;
 
@@ -17,16 +19,20 @@ struct Engine {
     instance: maligog::Instance,
     device: maligog::Device,
     sampler: maligog::Sampler,
-    buffer1: maligog::Buffer,
-    buffer2: maligog::Buffer,
     image: maligog::Image,
     swapchain: maligog::Swapchain,
-    image_view: maligog::ImageView,
-    descriptor_set: maligog::DescriptorSet,
+    ui_pass: egui_maligog::UiPass,
+    width: u32,
+    height: u32,
+    scale_factor: f64,
 }
 
 impl Engine {
     pub fn new(window: &winit::window::Window) -> Self {
+        let width = window.inner_size().width;
+        let height = window.inner_size().height;
+        let scale_factor = window.scale_factor();
+
         let entry = maligog::Entry::new().unwrap();
         let mut required_extensions = maligog::Surface::required_extensions();
         required_extensions.push(maligog::name::instance::Extension::ExtDebugUtils);
@@ -37,46 +43,6 @@ impl Engine {
             .unwrap()
             .to_owned();
         let device = pdevice.create_device(&[(pdevice.queue_families().first().unwrap(), &[1.0])]);
-        let buffer1 = device.create_buffer(
-            None,
-            123,
-            maligog::BufferUsageFlags::ACCELERATION_STRUCTURE_STORAGE_KHR,
-            maligog::MemoryLocation::GpuOnly,
-        );
-        dbg!(&buffer1);
-        let buffer2 = device.create_buffer(
-            Some("hello"),
-            1,
-            maligog::BufferUsageFlags::TRANSFER_DST | maligog::BufferUsageFlags::STORAGE_BUFFER,
-            maligog::MemoryLocation::GpuToCpu,
-        );
-        dbg!(&buffer2);
-
-        let buffer3 = device.create_buffer_init(
-            Some("hastalavista"),
-            &[1, 2, 3, 1, 51, 56, 4, 23, 1, 3],
-            maligog::BufferUsageFlags::STORAGE_BUFFER,
-            maligog::MemoryLocation::CpuToGpu,
-        );
-        dbg!(&buffer3);
-
-        let _buffer4 = device.create_buffer_init(
-            Some("gpu only"),
-            &[1, 2, 3, 1, 51, 56, 4, 23, 1, 3, 65, 2, 2, 2, 3],
-            maligog::BufferUsageFlags::UNIFORM_BUFFER,
-            maligog::MemoryLocation::GpuOnly,
-        );
-        dbg!(&_buffer4);
-
-        let set_layout = device.create_descriptor_set_layout(
-            Some("descriptor_set_layout"),
-            &[maligog::DescriptorSetLayoutBinding {
-                binding: 0,
-                descriptor_type: maligog::DescriptorType::UniformBuffer,
-                stage_flags: maligog::ShaderStageFlags::VERTEX,
-                descriptor_count: 1,
-            }],
-        );
 
         let pipeline_layout =
             device.create_pipeline_layout(Some("pipeline layout"), &[&set_layout], &[]);
@@ -96,20 +62,6 @@ impl Engine {
             maligog::ImageUsageFlags::STORAGE,
             maligog::MemoryLocation::GpuOnly,
         );
-        let image1 = device.create_image_init(
-            Some("initialized image"),
-            vk::Format::R8_UINT,
-            1,
-            1,
-            vk::ImageUsageFlags::empty(),
-            maligog::MemoryLocation::GpuOnly,
-            &[123],
-        );
-        image1.set_layout(
-            maligog::ImageLayout::UNDEFINED,
-            maligog::ImageLayout::GENERAL,
-        );
-        let image_view = image.create_view();
         let surface = instance.create_surface(window);
         let swapchain = device.create_swapchain(surface, maligog::PresentModeKHR::FIFO);
         let descriptor_set_layout = device.create_descriptor_set_layout(
@@ -122,26 +74,47 @@ impl Engine {
             }],
         );
 
-        let descriptor_set = device.create_descriptor_set(
-            Some("temp descriptor set"),
-            &descriptor_pool,
-            &descriptor_set_layout,
-            btreemap! {
-                0 => maligog::DescriptorUpdate::Buffer(vec![BufferView{buffer: buffer3.clone(), offset: 0},
-                                                            BufferView{buffer: buffer2.clone(), offset: 0}]),
-            },
-        );
+        let ui_pass = UiPass::new(&device);
         Self {
             instance,
             device,
             sampler,
-            buffer1,
-            buffer2,
             image,
             swapchain,
-            image_view,
-            descriptor_set,
+            ui_pass,
+            width,
+            height,
+            scale_factor,
         }
+    }
+
+    pub fn render(&mut self) {
+        let mut cmd_buf = self
+            .device
+            .create_command_buffer(self.device.graphics_queue_family_index());
+        cmd_buf.encode(|recorder| {
+            let index = self.swapchain.acquire_next_image().unwrap();
+
+            // self.swapchain.get_image(index).set_layout(
+            //     maligog::ImageLayout::UNDEFINED,
+            //     maligog::ImageLayout::PRESENT_SRC_KHR,
+            // );
+            let image = self.swapchain.get_image(index);
+
+            self.ui_pass.execute(
+                recorder,
+                &image,
+                &[],
+                &ScreenDescriptor {
+                    physical_width: self.width,
+                    physical_height: self.height,
+                    scale_factor: self.scale_factor as f32,
+                },
+            );
+            self.swapchain
+                .present(index, &[&self.swapchain.image_available_semaphore()]);
+        });
+        self.device.graphics_queue().submit_blocking()
     }
 }
 
@@ -178,15 +151,7 @@ fn test_general() {
                 win.request_redraw();
             }
             winit::event::Event::RedrawRequested(_) => {
-                let index = engine.swapchain.acquire_next_image().unwrap();
-
-                engine.swapchain.get_image(index).set_layout(
-                    maligog::ImageLayout::UNDEFINED,
-                    maligog::ImageLayout::PRESENT_SRC_KHR,
-                );
-                engine
-                    .swapchain
-                    .present(index, &[&engine.swapchain.image_available_semaphore()]);
+                engine.render();
             }
             _ => {}
         }

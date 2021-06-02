@@ -8,9 +8,12 @@ edition = "2018"
 [dependencies]
 maligog = { path = "../../maligog" }
 bytemuck = { version = "1.5.1", features = ["derive"] }
+maplit = "1.0"
+egui = "0.12"
 
 [build-dependencies.spirv-builder]
 git = "https://github.com/EmbarkStudios/rust-gpu"
 rev = "6019f391ec8d8caec3c7a16235322aca036e2d03"
 default-features = false
 features = ["use-installed-tools"]
+maplit = "1.0"

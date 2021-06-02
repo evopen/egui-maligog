@@ -14,10 +14,35 @@ use spirv_std::{arch, Image, Sampler};
 
 use spirv_std::glam;
 
-use glam::{vec4, Vec2, Vec3, Vec4, Vec4Swizzles};
+use glam::{vec3, vec4, BVec3, Vec2, Vec3, Vec4, Vec4Swizzles};
+
+fn mix(low: Vec3, high: Vec3, x: bool, y: bool, z: bool) -> Vec3 {
+    Vec3::new(
+        match x {
+            true => low.x,
+            false => high.x,
+        },
+        match y {
+            true => low.y,
+            false => high.y,
+        },
+        match z {
+            true => low.z,
+            false => high.z,
+        },
+    )
+}
 
 fn linear_from_srgb(srgb: Vec3) -> Vec3 {
-    Vec3::default()
+    let lower = srgb / 3294.6;
+    let higher = ((srgb + vec3(14.025, 14.025, 14.025)) / 269.025).powf(2.4);
+    mix(
+        higher,
+        lower,
+        srgb.x < 10.31475,
+        srgb.y < 10.31475,
+        srgb.z < 10.31475,
+    )
 }
 
 #[spirv(vertex)]
@@ -56,5 +81,6 @@ pub fn main_fs(
     #[spirv(descriptor_set = 0, binding = 1)] sampler: &Sampler,
     output: &mut Vec4,
 ) {
-    *output = vec4(1.0, 0.0, 0.0, 1.0);
+    *output = texture.sample(*sampler, v_tex_coord);
+    *output = v_color * *output;
 }

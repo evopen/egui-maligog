@@ -210,11 +210,17 @@ impl UiPass {
         );
 
         let descriptor_pool = device.create_descriptor_pool(
-            &[vk::DescriptorPoolSize::builder()
-                .ty(vk::DescriptorType::UNIFORM_BUFFER)
-                .descriptor_count(1)
-                .build()],
-            1,
+            &[
+                vk::DescriptorPoolSize::builder()
+                    .ty(vk::DescriptorType::UNIFORM_BUFFER)
+                    .descriptor_count(1)
+                    .build(),
+                vk::DescriptorPoolSize::builder()
+                    .ty(vk::DescriptorType::SAMPLED_IMAGE)
+                    .descriptor_count(1)
+                    .build(),
+            ],
+            2,
         );
 
         let uniform_descriptor_set = device.create_descriptor_set(

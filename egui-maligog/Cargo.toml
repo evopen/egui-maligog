@@ -21,4 +21,5 @@ features = ["use-installed-tools"]
 
 [dev-dependencies]
 env_logger = "0.8.3"
-winit = "0.25"
+winit = "0.24"
+egui_winit_platform = "0.7.0"

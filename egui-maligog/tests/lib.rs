@@ -25,6 +25,9 @@ struct Engine {
     width: u32,
     height: u32,
     scale_factor: f64,
+    egui_instance: egui_winit_platform::Platform,
+    start_time: std::time::Instant,
+    paint_jobs: Vec<egui::ClippedMesh>,
 }
 
 impl Engine {
@@ -66,6 +69,15 @@ impl Engine {
         );
 
         let ui_pass = UiPass::new(&device);
+        let egui_instance =
+            egui_winit_platform::Platform::new(egui_winit_platform::PlatformDescriptor {
+                physical_width: width,
+                physical_height: height,
+                scale_factor: scale_factor,
+                font_definitions: egui::FontDefinitions::default(),
+                style: egui::Style::default(),
+            });
+        let start_time = std::time::Instant::now();
         Self {
             instance,
             device,
@@ -76,7 +88,42 @@ impl Engine {
             width,
             height,
             scale_factor,
+            egui_instance,
+            start_time,
+            paint_jobs: Vec::new(),
         }
+    }
+
+    pub fn update(&mut self, event: &winit::event::Event<()>) {
+        self.egui_instance.handle_event(event);
+
+        self.egui_instance
+            .update_time(self.start_time.elapsed().as_secs_f64());
+        self.egui_instance.begin_frame();
+        egui::TopPanel::top(egui::Id::new("menu bar")).show(
+            &self.egui_instance.context().clone(),
+            |ui| {
+                egui::menu::bar(ui, |ui| {
+                    egui::menu::menu(ui, "File", |ui| {
+                        if ui.button("Organize Windows").clicked() {
+                            ui.ctx().memory().reset_areas();
+                        }
+                    });
+                });
+            },
+        );
+        let (_, paint_commands) = self.egui_instance.end_frame();
+        self.paint_jobs = self.egui_instance.context().tessellate(paint_commands);
+        self.ui_pass.update_buffers(
+            &self.paint_jobs,
+            &ScreenDescriptor {
+                physical_width: self.width,
+                physical_height: self.height,
+                scale_factor: self.scale_factor as f32,
+            },
+        );
+        self.ui_pass
+            .update_texture(&self.egui_instance.context().texture());
     }
 
     pub fn render(&mut self) {
@@ -95,7 +142,7 @@ impl Engine {
             self.ui_pass.execute(
                 recorder,
                 &image,
-                &[],
+                &self.paint_jobs,
                 &ScreenDescriptor {
                     physical_width: self.width,
                     physical_height: self.height,
@@ -122,6 +169,8 @@ fn test_general() {
     let mut engine = Engine::new(&win);
 
     event_loop.run_return(|event, _, control_flow| {
+        engine.update(&event);
+
         *control_flow = winit::event_loop::ControlFlow::Poll;
         match event {
             winit::event::Event::WindowEvent { window_id, event } => {

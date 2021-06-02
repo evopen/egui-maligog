@@ -160,14 +160,36 @@ fn test_general() {
 
     event_loop.run_return(|event, _, control_flow| {
         *control_flow = winit::event_loop::ControlFlow::Poll;
-        let index = engine.swapchain.acquire_next_image().unwrap();
-        engine.swapchain.get_image(index).set_layout(
-            maligog::ImageLayout::UNDEFINED,
-            maligog::ImageLayout::PRESENT_SRC_KHR,
-        );
-        engine
-            .swapchain
-            .present(index, &[&engine.swapchain.image_available_semaphore()]);
+        match event {
+            winit::event::Event::WindowEvent { window_id, event } => {
+                match event {
+                    winit::event::WindowEvent::CloseRequested => {
+                        *control_flow = winit::event_loop::ControlFlow::Exit;
+                    }
+                    winit::event::WindowEvent::KeyboardInput {
+                        device_id,
+                        input,
+                        is_synthetic,
+                    } => todo!(),
+                    _ => {}
+                }
+            }
+            winit::event::Event::MainEventsCleared => {
+                win.request_redraw();
+            }
+            winit::event::Event::RedrawRequested(_) => {
+                let index = engine.swapchain.acquire_next_image().unwrap();
+
+                engine.swapchain.get_image(index).set_layout(
+                    maligog::ImageLayout::UNDEFINED,
+                    maligog::ImageLayout::PRESENT_SRC_KHR,
+                );
+                engine
+                    .swapchain
+                    .present(index, &[&engine.swapchain.image_available_semaphore()]);
+            }
+            _ => {}
+        }
     });
     engine.device.wait_idle();
 }

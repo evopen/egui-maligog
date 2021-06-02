@@ -11,10 +11,10 @@ crate-type = ["dylib"]
 
 [dependencies]
 # spirv-std = "0.4.0-alpha.7"
-glam = { version = "0.15.2", default-features = false, features = ["libm", "spirv-std", "scalar-math"] }
 
 
 [dependencies.spirv-std]
 git = "https://github.com/EmbarkStudios/rust-gpu"
 rev = "7fc445eb10865022be4e31bc405bb9e624d40d04"
+features = ["const-generics", "glam"]
 

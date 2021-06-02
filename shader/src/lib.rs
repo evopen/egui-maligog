@@ -12,6 +12,8 @@ use spirv_std::macros::spirv;
 
 use spirv_std::{arch, Image, Sampler};
 
+use spirv_std::glam;
+
 use glam::{vec4, Vec2, Vec3, Vec4, Vec4Swizzles};
 
 fn linear_from_srgb(srgb: Vec3) -> Vec3 {
@@ -48,8 +50,8 @@ pub fn main_vs(
 
 #[spirv(fragment)]
 pub fn main_fs(
-    v_tex_coord: &Vec2,
-    v_color: &Vec4,
+    v_tex_coord: Vec2,
+    v_color: Vec4,
     #[spirv(descriptor_set = 1, binding = 0)] texture: &Image!(2D, type=f32, sampled),
     #[spirv(descriptor_set = 0, binding = 1)] sampler: &Sampler,
     output: &mut Vec4,

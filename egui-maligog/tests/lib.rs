@@ -44,15 +44,6 @@ impl Engine {
             .to_owned();
         let device = pdevice.create_device(&[(pdevice.queue_families().first().unwrap(), &[1.0])]);
 
-        let pipeline_layout =
-            device.create_pipeline_layout(Some("pipeline layout"), &[&set_layout], &[]);
-        let descriptor_pool = device.create_descriptor_pool(
-            &[maligog::DescriptorPoolSize::builder()
-                .ty(vk::DescriptorType::STORAGE_BUFFER)
-                .descriptor_count(2)
-                .build()],
-            1,
-        );
         let sampler = device.create_sampler(Some("sampler"));
         let image = device.create_image(
             Some("this is an image"),
@@ -92,9 +83,9 @@ impl Engine {
         let mut cmd_buf = self
             .device
             .create_command_buffer(self.device.graphics_queue_family_index());
-        cmd_buf.encode(|recorder| {
-            let index = self.swapchain.acquire_next_image().unwrap();
+        let index = self.swapchain.acquire_next_image().unwrap();
 
+        cmd_buf.encode(|recorder| {
             // self.swapchain.get_image(index).set_layout(
             //     maligog::ImageLayout::UNDEFINED,
             //     maligog::ImageLayout::PRESENT_SRC_KHR,
@@ -111,10 +102,9 @@ impl Engine {
                     scale_factor: self.scale_factor as f32,
                 },
             );
-            self.swapchain
-                .present(index, &[&self.swapchain.image_available_semaphore()]);
         });
-        self.device.graphics_queue().submit_blocking()
+        self.device.graphics_queue().submit_blocking(&[cmd_buf]);
+        self.swapchain.present(index, &[]);
     }
 }
 

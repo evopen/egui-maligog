@@ -140,12 +140,12 @@ impl UiPass {
                 maligog::ShaderStage::new(
                     shader_module.clone(),
                     maligog::ShaderStageFlags::VERTEX,
-                    "main",
+                    "main_vs",
                 ),
                 maligog::ShaderStage::new(
                     shader_module.clone(),
                     maligog::ShaderStageFlags::FRAGMENT,
-                    "main",
+                    "main_fs",
                 ),
             ],
             render_pass.clone(),

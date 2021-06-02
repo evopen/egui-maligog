@@ -596,7 +596,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3abb554f8ee44336b72d522e0a7fe86a29e09f839a36022fa869a7dfe941a54b"
 dependencies = [
  "num-traits",
- "spirv-std",
+ "spirv-std 0.4.0-alpha.7 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1203,7 +1203,7 @@ checksum = "410f7acf3cb3a44527c5d9546bad4bf4e6c460915d5f9f2fc524498bfe8f70ce"
 [[package]]
 name = "rustc_codegen_spirv"
 version = "0.4.0-alpha.7"
-source = "git+https://github.com/EmbarkStudios/rust-gpu?rev=6019f391ec8d8caec3c7a16235322aca036e2d03#6019f391ec8d8caec3c7a16235322aca036e2d03"
+source = "git+https://github.com/EmbarkStudios/rust-gpu?rev=7fc445eb10865022be4e31bc405bb9e624d40d04#7fc445eb10865022be4e31bc405bb9e624d40d04"
 dependencies = [
  "bimap",
  "hashbrown",
@@ -1305,7 +1305,7 @@ name = "shader"
 version = "0.1.0"
 dependencies = [
  "glam",
- "spirv-std",
+ "spirv-std 0.4.0-alpha.7 (git+https://github.com/EmbarkStudios/rust-gpu?rev=7fc445eb10865022be4e31bc405bb9e624d40d04)",
 ]
 
 [[package]]
@@ -1336,7 +1336,7 @@ dependencies = [
 [[package]]
 name = "spirv-builder"
 version = "0.4.0-alpha.7"
-source = "git+https://github.com/EmbarkStudios/rust-gpu?rev=6019f391ec8d8caec3c7a16235322aca036e2d03#6019f391ec8d8caec3c7a16235322aca036e2d03"
+source = "git+https://github.com/EmbarkStudios/rust-gpu?rev=7fc445eb10865022be4e31bc405bb9e624d40d04#7fc445eb10865022be4e31bc405bb9e624d40d04"
 dependencies = [
  "memchr",
  "raw-string",
@@ -1353,8 +1353,19 @@ checksum = "726c4c71ff802a9754ffae31c04c4d867aa23b49f883a56202dce285066ad792"
 dependencies = [
  "bitflags",
  "num-traits",
- "spirv-std-macros",
- "spirv-types",
+ "spirv-std-macros 0.4.0-alpha.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spirv-types 0.4.0-alpha.7 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "spirv-std"
+version = "0.4.0-alpha.7"
+source = "git+https://github.com/EmbarkStudios/rust-gpu?rev=7fc445eb10865022be4e31bc405bb9e624d40d04#7fc445eb10865022be4e31bc405bb9e624d40d04"
+dependencies = [
+ "bitflags",
+ "num-traits",
+ "spirv-std-macros 0.4.0-alpha.7 (git+https://github.com/EmbarkStudios/rust-gpu?rev=7fc445eb10865022be4e31bc405bb9e624d40d04)",
+ "spirv-types 0.4.0-alpha.7 (git+https://github.com/EmbarkStudios/rust-gpu?rev=7fc445eb10865022be4e31bc405bb9e624d40d04)",
 ]
 
 [[package]]
@@ -1366,7 +1377,19 @@ dependencies = [
  "heck",
  "proc-macro2",
  "quote",
- "spirv-types",
+ "spirv-types 0.4.0-alpha.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn",
+]
+
+[[package]]
+name = "spirv-std-macros"
+version = "0.4.0-alpha.7"
+source = "git+https://github.com/EmbarkStudios/rust-gpu?rev=7fc445eb10865022be4e31bc405bb9e624d40d04#7fc445eb10865022be4e31bc405bb9e624d40d04"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "spirv-types 0.4.0-alpha.7 (git+https://github.com/EmbarkStudios/rust-gpu?rev=7fc445eb10865022be4e31bc405bb9e624d40d04)",
  "syn",
 ]
 
@@ -1395,6 +1418,11 @@ name = "spirv-types"
 version = "0.4.0-alpha.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2d7f880a5540c04261e7454b5f3a342b5540283911ca9ebfec83eba9fb607ca0"
+
+[[package]]
+name = "spirv-types"
+version = "0.4.0-alpha.7"
+source = "git+https://github.com/EmbarkStudios/rust-gpu?rev=7fc445eb10865022be4e31bc405bb9e624d40d04#7fc445eb10865022be4e31bc405bb9e624d40d04"
 
 [[package]]
 name = "spirv_headers"
@@ -1442,9 +1470,9 @@ dependencies = [
 
 [[package]]
 name = "tar"
-version = "0.4.33"
+version = "0.4.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0bcfbd6a598361fda270d82469fff3d65089dc33e175c9a131f7b4cd395f228"
+checksum = "7d779dc6aeff029314570f666ec83f19df7280bb36ef338442cfa8c604021b80"
 dependencies = [
  "filetime",
  "libc",

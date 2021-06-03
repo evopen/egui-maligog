@@ -148,6 +148,9 @@ impl Engine {
                     physical_height: self.height,
                     scale_factor: self.scale_factor as f32,
                 },
+                Some(vk::ClearColorValue {
+                    float32: [1.0, 1.0, 1.0, 1.0],
+                }),
             );
         });
         self.device.graphics_queue().submit_blocking(&[cmd_buf]);

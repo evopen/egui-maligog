@@ -257,6 +257,7 @@ impl UiPass {
         color_attachment: &maligog::Image,
         paint_jobs: &[egui::paint::ClippedMesh],
         screen_descriptor: &ScreenDescriptor,
+        clear_color: Option<vk::ClearColorValue>,
     ) {
         let image_view = color_attachment.create_view();
         let framebuffer = self.device.create_framebuffer(
@@ -271,6 +272,30 @@ impl UiPass {
         let physical_height = screen_descriptor.physical_height;
 
         recorder.begin_render_pass(&self.render_pass, &framebuffer, |recorder| {
+            if let Some(color) = clear_color {
+                recorder.clear_attachments(
+                    &[vk::ClearAttachment::builder()
+                        .aspect_mask(vk::ImageAspectFlags::COLOR)
+                        .color_attachment(0)
+                        .clear_value(vk::ClearValue { color })
+                        .build()],
+                    &[vk::ClearRect::builder()
+                        .base_array_layer(0)
+                        .layer_count(1)
+                        .rect(
+                            vk::Rect2D::builder()
+                                .offset(vk::Offset2D::default())
+                                .extent(
+                                    vk::Extent2D::builder()
+                                        .width(color_attachment.width())
+                                        .height(color_attachment.height())
+                                        .build(),
+                                )
+                                .build(),
+                        )
+                        .build()],
+                )
+            }
             recorder.bind_graphics_pipeline(&self.graphics_pipeline, |recorder| {
                 recorder.bind_descriptor_sets(vec![&self.uniform_descriptor_set], 0);
                 for ((egui::ClippedMesh(clip_rect, mesh), vertex_buffer), index_buffer) in

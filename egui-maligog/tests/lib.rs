@@ -127,9 +127,10 @@ impl Engine {
     }
 
     pub fn render(&mut self) {
-        let mut cmd_buf = self
-            .device
-            .create_command_buffer(self.device.graphics_queue_family_index());
+        let mut cmd_buf = self.device.create_command_buffer(
+            Some("frame command buffer"),
+            self.device.graphics_queue_family_index(),
+        );
         let index = self.swapchain.acquire_next_image().unwrap();
 
         cmd_buf.encode(|recorder| {

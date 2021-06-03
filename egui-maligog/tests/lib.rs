@@ -132,13 +132,12 @@ impl Engine {
             self.device.graphics_queue_family_index(),
         );
         let index = self.swapchain.acquire_next_image().unwrap();
-
+        let image = self.swapchain.get_image(index);
         cmd_buf.encode(|recorder| {
             // self.swapchain.get_image(index).set_layout(
             //     maligog::ImageLayout::UNDEFINED,
             //     maligog::ImageLayout::PRESENT_SRC_KHR,
             // );
-            let image = self.swapchain.get_image(index);
 
             self.ui_pass.execute(
                 recorder,
@@ -155,6 +154,10 @@ impl Engine {
             );
         });
         self.device.graphics_queue().submit_blocking(&[cmd_buf]);
+        image.set_layout(
+            vk::ImageLayout::ATTACHMENT_OPTIMAL_KHR,
+            vk::ImageLayout::PRESENT_SRC_KHR,
+        );
         self.swapchain.present(index, &[]);
     }
 }
@@ -182,11 +185,6 @@ fn test_general() {
                     winit::event::WindowEvent::CloseRequested => {
                         *control_flow = winit::event_loop::ControlFlow::Exit;
                     }
-                    winit::event::WindowEvent::KeyboardInput {
-                        device_id,
-                        input,
-                        is_synthetic,
-                    } => todo!(),
                     _ => {}
                 }
             }

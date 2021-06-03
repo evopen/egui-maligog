@@ -421,10 +421,10 @@ impl UiPass {
 
         image.set_layout(
             maligog::ImageLayout::TRANSFER_DST_OPTIMAL,
-            vk::ImageLayout::SHADER_READ_ONLY_OPTIMAL,
+            vk::ImageLayout::READ_ONLY_OPTIMAL_KHR,
         );
 
-        let mut descriptor_set = self.device.create_descriptor_set(
+        let descriptor_set = self.device.create_descriptor_set(
             Some("texture descriptor set"),
             &self.descriptor_pool,
             &self.texture_descriptor_set_layout,

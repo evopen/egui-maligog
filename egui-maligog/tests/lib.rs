@@ -45,7 +45,7 @@ impl Engine {
             .first()
             .unwrap()
             .to_owned();
-        let device = pdevice.create_device(&[(pdevice.queue_families().first().unwrap(), &[1.0])]);
+        let device = pdevice.create_device();
 
         let sampler = device.create_sampler(Some("sampler"));
         let image = device.create_image(

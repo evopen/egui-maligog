@@ -3,6 +3,8 @@ use bytemuck::{Pod, Zeroable};
 use maligog::{vk, BufferView, DescriptorSet, Device};
 use maplit::btreemap;
 
+pub use egui;
+
 const SHADER: &[u8] = include_bytes!(env!("shader.spv"));
 
 #[derive(Clone, Copy, Debug, Pod, Zeroable)]

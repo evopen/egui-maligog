@@ -24,7 +24,7 @@ struct Engine {
     ui_pass: egui_maligog::UiPass,
     width: u32,
     height: u32,
-    scale_factor: f64,
+    scale_factor: f32,
     egui_instance: egui_winit_platform::Platform,
     start_time: std::time::Instant,
     paint_jobs: Vec<egui::ClippedMesh>,

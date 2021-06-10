@@ -138,12 +138,12 @@ impl UiPass {
             pipeline_layout,
             vec![
                 maligog::ShaderStage::new(
-                    shader_module.clone(),
+                    &shader_module,
                     maligog::ShaderStageFlags::VERTEX,
                     "main_vs",
                 ),
                 maligog::ShaderStage::new(
-                    shader_module.clone(),
+                    &shader_module,
                     maligog::ShaderStageFlags::FRAGMENT,
                     "main_fs",
                 ),

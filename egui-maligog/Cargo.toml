@@ -15,7 +15,7 @@ backtrace = "0.3"
 
 [build-dependencies.spirv-builder]
 git = "https://github.com/EmbarkStudios/rust-gpu"
-rev = "7fc445eb10865022be4e31bc405bb9e624d40d04"
+rev = "c3eff4d4a5a52607aa3bc8b4ba8409f6659425ee"
 default-features = false
 features = ["use-installed-tools"]
 

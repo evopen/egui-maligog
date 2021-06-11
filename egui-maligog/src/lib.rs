@@ -56,7 +56,13 @@ impl UiPass {
             maligog::BufferUsageFlags::UNIFORM_BUFFER | maligog::BufferUsageFlags::TRANSFER_DST,
             maligog::MemoryLocation::CpuToGpu,
         );
-        let sampler = device.create_sampler(Some("egui sampler"));
+        let sampler = device.create_sampler(
+            Some("egui sampler"),
+            maligog::Filter::NEAREST,
+            maligog::Filter::NEAREST,
+            maligog::SamplerAddressMode::REPEAT,
+            maligog::SamplerAddressMode::REPEAT,
+        );
 
         let uniform_descriptor_set_layout = device.create_descriptor_set_layout(
             Some("uniform"),

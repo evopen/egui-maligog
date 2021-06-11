@@ -18,7 +18,6 @@ use winit::platform::windows::EventLoopExtWindows;
 struct Engine {
     instance: maligog::Instance,
     device: maligog::Device,
-    sampler: maligog::Sampler,
     image: maligog::Image,
     swapchain: maligog::Swapchain,
     ui_pass: egui_maligog::UiPass,
@@ -47,7 +46,6 @@ impl Engine {
             .to_owned();
         let device = pdevice.create_device();
 
-        let sampler = device.create_sampler(Some("sampler"));
         let image = device.create_image(
             Some("this is an image"),
             vk::Format::B8G8R8A8_UNORM,
@@ -81,13 +79,12 @@ impl Engine {
         Self {
             instance,
             device,
-            sampler,
             image,
             swapchain,
             ui_pass,
             width,
             height,
-            scale_factor,
+            scale_factor: scale_factor as f32,
             egui_instance,
             start_time,
             paint_jobs: Vec::new(),
@@ -112,6 +109,9 @@ impl Engine {
                 });
             },
         );
+        egui::Window::new("hello").show(&self.egui_instance.context(), |ui| {
+            ui.label("alsdkfjalsdk");
+        });
         let (_, paint_commands) = self.egui_instance.end_frame();
         self.paint_jobs = self.egui_instance.context().tessellate(paint_commands);
         self.ui_pass.update_buffers(

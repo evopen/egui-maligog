@@ -121,29 +121,9 @@ impl UiPass {
                 .build(),
         );
 
-        let render_pass = device.create_render_pass(
-            &vk::RenderPassCreateInfo::builder()
-                .attachments(&[vk::AttachmentDescription::builder()
-                    .format(vk::Format::B8G8R8A8_UNORM)
-                    .samples(vk::SampleCountFlags::TYPE_1)
-                    .load_op(vk::AttachmentLoadOp::LOAD)
-                    .store_op(vk::AttachmentStoreOp::STORE)
-                    .initial_layout(vk::ImageLayout::COLOR_ATTACHMENT_OPTIMAL)
-                    .final_layout(vk::ImageLayout::PRESENT_SRC_KHR)
-                    .build()])
-                .subpasses(&[vk::SubpassDescription::builder()
-                    .pipeline_bind_point(vk::PipelineBindPoint::GRAPHICS)
-                    .color_attachments(&[vk::AttachmentReference::builder()
-                        .layout(vk::ImageLayout::COLOR_ATTACHMENT_OPTIMAL)
-                        .attachment(0)
-                        .build()])
-                    .build()])
-                .build(),
-        );
-
         let graphics_pipeline = device.create_graphics_pipeline(
             Some("egui pipeline"),
-            pipeline_layout,
+            &pipeline_layout,
             vec![
                 maligog::ShaderStage::new(
                     &shader_module,
@@ -156,7 +136,7 @@ impl UiPass {
                     "main_fs",
                 ),
             ],
-            render_pass.clone(),
+            &render_pass,
             &vk::PipelineVertexInputStateCreateInfo::builder()
                 .vertex_binding_descriptions(&[vk::VertexInputBindingDescription::builder()
                     .stride(5 * 4)

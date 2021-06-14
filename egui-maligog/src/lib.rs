@@ -345,8 +345,8 @@ impl UiPass {
                         1,
                     );
 
-                    recorder.bind_index_buffer(index_buffer.clone(), 0, vk::IndexType::UINT32);
-                    recorder.bind_vertex_buffer(vec![vertex_buffer.clone()], &[0]);
+                    recorder.bind_index_buffer(&index_buffer, 0, vk::IndexType::UINT32);
+                    recorder.bind_vertex_buffers(&[&vertex_buffer], &[0]);
                     recorder.draw_indexed(mesh.indices.len() as u32, 1);
                 }
             });

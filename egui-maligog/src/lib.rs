@@ -72,12 +72,14 @@ impl UiPass {
                     descriptor_type: maligog::DescriptorType::UniformBuffer,
                     stage_flags: maligog::ShaderStageFlags::VERTEX,
                     descriptor_count: 1,
+                    variable_count: false,
                 },
                 maligog::DescriptorSetLayoutBinding {
                     binding: 1,
                     descriptor_type: maligog::DescriptorType::Sampler(None),
                     stage_flags: maligog::ShaderStageFlags::FRAGMENT,
                     descriptor_count: 1,
+                    variable_count: false,
                 },
             ],
         );
@@ -89,6 +91,7 @@ impl UiPass {
                 descriptor_type: maligog::DescriptorType::SampledImage,
                 stage_flags: maligog::ShaderStageFlags::FRAGMENT,
                 descriptor_count: 1,
+                variable_count: false,
             }],
         );
 

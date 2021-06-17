@@ -63,6 +63,7 @@ impl Engine {
                 descriptor_type: maligog::DescriptorType::StorageBuffer,
                 stage_flags: maligog::ShaderStageFlags::ALL_GRAPHICS,
                 descriptor_count: 2,
+                variable_count: false,
             }],
         );
 

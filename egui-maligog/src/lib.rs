@@ -1,3 +1,5 @@
+#![cfg_attr(debug_assertions, allow(dead_code, unused_imports, unused))]
+
 use bytemuck::{Pod, Zeroable};
 
 use maligog::{vk, BufferView, DescriptorSet, Device};

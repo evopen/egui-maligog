@@ -7,7 +7,7 @@ edition = "2018"
 
 [dependencies]
 maligog = { path = "../../maligog" }
-bytemuck = { version = "1.5.1", features = ["derive"] }
+bytemuck = { version = "1.7", features = ["derive"] }
 maplit = "1.0"
 egui = "0.12"
 log = "0.4.14"
@@ -15,11 +15,11 @@ backtrace = "0.3"
 
 [build-dependencies.spirv-builder]
 git = "https://github.com/EmbarkStudios/rust-gpu"
-rev = "c3eff4d4a5a52607aa3bc8b4ba8409f6659425ee"
+rev = "8924fe7b4cc552cf764819a028d6c23ad983b3db"
 default-features = false
 features = ["use-installed-tools"]
 
 [dev-dependencies]
 env_logger = "0.8.3"
-winit = "0.24"
-egui_winit_platform = "0.7.0"
+winit = "0.25"
+egui_winit_platform = "0.8.0"

@@ -222,7 +222,7 @@ impl UiPass {
             &uniform_descriptor_set_layout,
             btreemap! {
                 0 => maligog::DescriptorUpdate::Buffer(vec![BufferView { buffer: uniform_buffer.clone(), offset: 0 }]),
-                1 => maligog::DescriptorUpdate::Sampler(sampler.clone())
+                1 => maligog::DescriptorUpdate::Sampler(vec![sampler.clone()])
             },
         );
 
